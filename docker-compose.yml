@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: sadovsky_postgres
+    environment:
+      POSTGRES_DB: sadovsky
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  app:
+    build: ./python
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/sadovsky
+    command: python query.py
